@@ -6,6 +6,7 @@ export DC1_VISIT_DB='/global/common/cori/contrib/lsst/production/DC1/visitDBs/20
 
 ### OpSim DB for generating instanceCatalog
 export DC1_OPSIM_DB='/global/common/cori/contrib/lsst/production/DC1/opsimDBs/minion_1016_sqlite_new_dithers.db'
+export DC1_OPSIM_DB='/global/cscratch1/sd/desc/opsimDBs/minion_1016_sqlite_new_dithers.db'
 
 ## Location of phoSim inputs
 DC1base=`dirname ${DC1_ROOT}`

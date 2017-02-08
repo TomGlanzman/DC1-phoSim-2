@@ -228,6 +228,11 @@ print cmd
 sys.stdout.flush()
 rc = os.system(cmd)
 sys.stdout.flush()
+log.info('Return from generateDc1InstCat, rc= '+str(rc))
+if rc <> 0:
+    log.error('Failed to generate instance catalog.')
+    sys.exit(1)
+    pass
 
 
 ## Preserve the instance catalog info for subsequent processing steps
