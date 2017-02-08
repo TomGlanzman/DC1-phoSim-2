@@ -28,6 +28,22 @@ def runPhosimStep(step,snap=0):
     
     subFileName += '.submit'
     print 'subFileName = ', subFileName
+
+    parFileName += '.pars'
+
+    if step=='raytrace':     ## append trimcatalog for this sensor to the end of the raytrace .pars file
+        trimcatFileName = 'trimcatalog_'+os.getenv('DC1_OBSHISTID')+'_'+os.getenv('DC1_SENSORID')+'.pars'
+        print 'trimcatFileName = ',trimcatFileName
+        log.info('Append trimcatalog to end of raytrace .pars file')
+        cmd = 'cat '+trimcatFilename+' >> '+parFileName
+        print cmd
+        rc = os.system(cmd)
+        if rc <> 0:
+            log.error('Failure to concatenate trimcat to raytrace .pars file')
+            sys.exit(1)
+            pass
+        pass
+
     
     sixdigits = "%06d" % int(os.getenv('DC1_TOPLEVEL6'))
     workDir = os.path.join(os.getenv('PHOSIM_SCR_ROOT'),sixdigits,'work')
