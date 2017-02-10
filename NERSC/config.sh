@@ -12,7 +12,9 @@ export DC1_OPSIM_DB='/global/cscratch1/sd/desc/opsimDBs/minion_1016_sqlite_new_d
 DC1base=`dirname ${DC1_ROOT}`
 export PHOSIM_CATALOGS=${DC1base}/catalogs
 
-export PHOSIM_SEDS=${DC1base}/SEDs
+#export PHOSIM_SEDS=${DC1base}/SEDs
+#export PHOSIM_SEDS='/global/common/cori/contrib/lsst/lsstDM/w.2016.20/lsstsw/stack/Linux64/sims_sed_library/12.0'
+#export PHOSIM_SEDS='/global/projecta/projectdirs/lsst/production/DC1/phoSim-data/SEDs'
 export PHOSIM_COMMANDS=${DC1_CONFIGDIR}/commands.txt
 
 ###SEDLIB = '/nfs/farm/g/lsst/u1/software/redhat6-x86_64-64bit-gcc44/DMstack/v12_0/opt/lsst/sims_sed_library'

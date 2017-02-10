@@ -23,27 +23,15 @@ def runPhosimStep(step,snap=0):
     else:
         ckpt = '0'   ## internal phoSim checkpointing is NOT supported
         subFileName = step+'_'+os.getenv('DC1_OBSHISTID')+'_'+os.getenv('DC1_SENSORID')+'_'+'E'+exposure
+
         if step == 'raytrace': subFileName += '_'+ckpt
         pass
     
+    parFileName = subFileName+'.pars'
+    print 'parFileName = ',parFileName
+        
     subFileName += '.submit'
     print 'subFileName = ', subFileName
-
-    parFileName += '.pars'
-
-    if step=='raytrace':     ## append trimcatalog for this sensor to the end of the raytrace .pars file
-        trimcatFileName = 'trimcatalog_'+os.getenv('DC1_OBSHISTID')+'_'+os.getenv('DC1_SENSORID')+'.pars'
-        print 'trimcatFileName = ',trimcatFileName
-        log.info('Append trimcatalog to end of raytrace .pars file')
-        cmd = 'cat '+trimcatFilename+' >> '+parFileName
-        print cmd
-        rc = os.system(cmd)
-        if rc <> 0:
-            log.error('Failure to concatenate trimcat to raytrace .pars file')
-            sys.exit(1)
-            pass
-        pass
-
     
     sixdigits = "%06d" % int(os.getenv('DC1_TOPLEVEL6'))
     workDir = os.path.join(os.getenv('PHOSIM_SCR_ROOT'),sixdigits,'work')
@@ -76,13 +64,28 @@ def runPhosimStep(step,snap=0):
     print '----------------------------------------\n# useful lines in submit file = ',nlines
     print 'jobParms = ',jobParms
 
-    
-   ## Construct command and execute
+## Switch to phoSim work directory for remaining steps
+    os.chdir(jobParms['initialdir'])
+
+## append trimcatalog for this sensor to the end of the raytrace .pars file
+    if step=='raytrace':
+        trimcatFileName = 'trimcatalog_'+os.getenv('DC1_OBSHISTID')+'_'+os.getenv('DC1_SENSORID')+'.pars'
+        print 'trimcatFileName = ',trimcatFileName
+        log.info('Append trimcatalog to end of raytrace .pars file')
+        cmd = 'cat '+trimcatFileName+' >> '+parFileName
+        print cmd
+        rc = os.system(cmd)
+        if rc <> 0:
+            log.error('Failure to concatenate trimcat to raytrace .pars file')
+            sys.exit(1)
+            pass
+        pass
+
+   ## Construct phoSim command and execute
     log.info('Construct command and execute')
     #cmd = 'cat '+jobParms['Input']+' | '+jobParms['executable']
     cmd = jobParms['executable']+' < '+jobParms['Input']
     print 'cmd = ',cmd
-    os.chdir(jobParms['initialdir'])
 
     sys.stdout.flush()
     rc = os.system(cmd)

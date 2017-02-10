@@ -194,7 +194,7 @@ if len(sensorList) <= 100:
     foo = ','.join(sensorList)
     bar = ''
 else:
-    foo = ','.join(sensorList[0:99])
+    foo = ','.join(sensorList[:100])
     bar = ','.join(sensorList[100:])
     pass
 print 'foo = ',foo
@@ -373,6 +373,8 @@ cmd = os.path.join(os.getenv('PHOSIM_ROOT'),'phosim.py')
 ## Global phoSim options
 ##   -g condor causes batch files to be created for trim/raytrace/e2adc steps
 opts = ' -g condor -o '+scr_output+' -w '+scr_work+' -c '+cfScratch+' --checkpoint=0 '
+#opts += ' --sed='+os.getenv('PHOSIM_SEDS')+' '
+
 if os.getenv('PHOSIM_E2ADC') == 0:
     opts += ' -e 0 '
 if 'NTHREADS' in os.environ:
