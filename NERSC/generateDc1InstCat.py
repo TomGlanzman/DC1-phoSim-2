@@ -92,16 +92,18 @@ if __name__ == "__main__":
             output.write('includeobj %s\n' % gal_name)
             output.write('includeobj %s\n' % agn_name)
 
+        chunkSize = 10000     # 2/3/2017 100,000 seems too large for fatboy
+            
         cat.write_catalog(os.path.join(out_dir, star_name), write_header=False,
-                          chunk_size=100000)
+                          chunk_size=chunkSize)
 
         cat = PhoSimCatalogSersic2D(bulge_db, obs_metadata=obs)
         cat.write_catalog(os.path.join(out_dir, gal_name), write_header=False,
-                          chunk_size=100000)
+                          chunk_size=chunkSize)
         cat = PhoSimCatalogSersic2D(disk_db, obs_metadata=obs)
         cat.write_catalog(os.path.join(out_dir, gal_name), write_header=False,
-                          write_mode='a', chunk_size=100000)
+                          write_mode='a', chunk_size=chunkSize)
 
         cat = PhoSimCatalogZPoint(agn_db, obs_metadata=obs)
         cat.write_catalog(os.path.join(out_dir, agn_name), write_header=False,
-                          chunk_size=100000)
+                          chunk_size=chunkSize)
