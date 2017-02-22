@@ -2,6 +2,7 @@ from __future__ import with_statement
 import argparse
 import os
 import numpy as np
+import gzip
 
 from lsst.sims.catUtils.exampleCatalogDefinitions import PhoSimCatalogPoint
 from lsst.sims.catalogs.definitions import InstanceCatalog
@@ -28,8 +29,6 @@ class MaskedPhoSimCatalogPoint(PhoSimCatalogPoint):
 class BrightStarCatalog(PhoSimCatalogPoint):
 
     min_mag = None
-
-    column_outputs = ['uniqueId', 'phoSimMagNorm']
 
     @cached
     def get_isBright(self):
@@ -113,17 +112,17 @@ if __name__ == "__main__":
             obs.OpsimMetaData['rotTelPos'] = obs.OpsimMetaData['ditheredRotTelPos']
 
         cat_name = os.path.join(out_dir,'phosim_cat_%d.txt' % obshistid)
-        star_name = os.path.join('star_cat_%d.txt' % obshistid)
-        gal_name = os.path.join('gal_cat_%d.txt' % obshistid)
-        agn_name = os.path.join('agn_cat_%d.txt' % obshistid)
+        star_name = 'star_cat_%d.txt' % obshistid
+        gal_name = 'gal_cat_%d.txt' % obshistid
+        agn_name = 'agn_cat_%d.txt' % obshistid
 
         cat = PhoSimCatalogPoint(star_db, obs_metadata=obs)
         cat.phoSimHeaderMap = phosim_header_map
         with open(cat_name, 'w') as output:
             cat.write_header(output)
-            output.write('includeobj %s\n' % star_name)
-            output.write('includeobj %s\n' % gal_name)
-            output.write('includeobj %s\n' % agn_name)
+            output.write('includeobj %s.gz\n' % star_name)
+            output.write('includeobj %s.gz\n' % gal_name)
+            output.write('includeobj %s.gz\n' % agn_name)
 
         star_cat = MaskedPhoSimCatalogPoint(star_db, obs_metadata=obs)
         star_cat.phoSimHeaderMap = phosim_header_map
@@ -147,4 +146,10 @@ if __name__ == "__main__":
         cat = PhoSimCatalogZPoint(agn_db, obs_metadata=obs)
         cat.write_catalog(os.path.join(out_dir, agn_name), write_header=False,
                           chunk_size=100000)
-        
+
+        for orig_name in (star_name, gal_name, agn_name):
+            full_name = os.path.join(out_dir, orig_name)
+            with open(full_name, 'r') as input_file:
+                with gzip.open(full_name+'.gz', 'w') as output_file:
+                    output_file.writelines(input_file)
+            os.unlink(full_name)
